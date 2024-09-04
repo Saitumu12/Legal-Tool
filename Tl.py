@@ -1,0 +1,100 @@
+from flask import Flask, jsonify, request, render_template
+
+app = Flask(__name__)
+
+laws = {"section": "Section 34", "description": "Acts done by several persons in furtherance of common intention."},
+    {"section": "Section 35", "description": "When such an act is criminal by reason of its being done with a criminal knowledge or intention."},
+    {"section": "Section 36", "description": "Effect caused partly by act and partly by omission."},
+    {"section": "Section 37", "description": "Co-operation by doing one of several acts constituting an offence."},
+    {"section": "Section 38", "description": "Persons concerned in criminal act may be guilty of different offences."},
+    {"section": "Section 39", "description": "Voluntarily."},
+    {"section": "Section 40", "description": "Offence."},
+    {"section": "Section 41", "description": "Special law."},
+    {"section": "Section 42", "description": "Local law."},
+    {"section": "Section 43", "description": "Illegal, Legally bound to do."},
+    {"section": "Section 44", "description": "Injury."},
+    {"section": "Section 45", "description": "Life."},
+    {"section": "Section 46", "description": "Death."},
+    {"section": "Section 47", "description": "Animal."},
+    {"section": "Section 48", "description": "Vessel."},
+    {"section": "Section 49", "description": "Year, Month."},
+    {"section": "Section 50", "description": "Section."},
+    {"section": "Section 51", "description": "Oath."},
+    {"section": "Section 52", "description": "Good faith."},
+    {"section": "Section 52A", "description": "Harbour."},
+    {"section": "Section 53", "description": "Punishment."},
+    {"section": "Section 53A", "description": "Construction of reference to transportation."},
+    {"section": "Section 54", "description": "Commutation of sentence of death."},
+    {"section": "Section 55", "description": "Commutation of sentence of imprisonment for life."},
+    {"section": "Section 55A", "description": "Definition of appropriate Government."},
+    {"section": "Section 56", "description": "Sentence of Europeans and Americans to penal servitude."},
+    {"section": "Section 57", "description": "Fractions of terms of punishment."},
+    {"section": "Section 58", "description": "Offenders sentenced to transportation how dealt with until transported."},
+    {"section": "Section 59", "description": "Transportation instead of imprisonment."},
+    {"section": "Section 60", "description": "Sentence may be (in certain cases of imprisonment) wholly or partly rigorous or simple."},
+    {"section": "Section 61", "description": "Sentence of forfeiture of property."},
+    {"section": "Section 62", "description": "Forfeiture of property, in respect of offenders punishable with death, transportation or imprisonment."},
+    {"section": "Section 63", "description": "Amount of fine."},
+    {"section": "Section 64", "description": "Sentence of imprisonment for non-payment of fine."},
+    {"section": "Section 65", "description": "Limit to imprisonment for non-payment of fine, when imprisonment and fine awardable."},
+    {"section": "Section 66", "description": "Description of imprisonment for non-payment of fine."},
+    {"section": "Section 67", "description": "Imprisonment for non-payment of fine when offence punishable with fine only."},
+    {"section": "Section 68", "description": "Imprisonment to terminate on payment of fine."},
+    {"section": "Section 69", "description": "Termination of imprisonment on payment of proportional part of fine."},
+    {"section": "Section 70", "description": "Fine levied within six years, or during imprisonment - Death not to discharge property from liability."},
+    {"section": "Section 71", "description": "Limit of punishment of offence made up of several offences."},
+    {"section": "Section 72", "description": "Punishment of person guilty of one of several offences, the judgment stating that it is doubtful of which."},
+    {"section": "Section 73", "description": "Solitary confinement."},
+    {"section": "Section 74", "description": "Limit of solitary confinement."},
+    {"section": "Section 76", "description": "Act done by a person bound, or by mistake of fact believing himself bound, by law."},
+    {"section": "Section 77", "description": "Act of Judge when acting judicially."},
+    {"section": "Section 78", "description": "Act done pursuant to the judgment or order of Court."},
+    {"section": "Section 79", "description": "Act done by a person justified, or by mistake of fact believing himself justified, by law."},
+    {"section": "Section 80", "description": "Accident in doing a lawful act."},
+    {"section": "Section 81", "description": "Act likely to cause harm, but done without criminal intent, and to prevent other harm."},
+    {"section": "Section 82", "description": "Act of a child under seven years of age."},
+    {"section": "Section 83", "description": "Act of a child above seven and under twelve of immature understanding."},
+    {"section": "Section 84", "description": "Act of a person of unsound mind."},
+    {"section": "Section 85", "description": "Act of a person incapable of judgment by reason of intoxication caused against his will."},
+    {"section": "Section 86", "description": "Offence requiring a particular intent or knowledge committed by one who is intoxicated."},
+    {"section": "Section 87", "description": "Act not intended and not known to be likely to cause death or grievous hurt, done by consent."},
+    {"section": "Section 88", "description": "Act not intended to cause death, done by consent in good faith for person’s benefit."},
+    {"section": "Section 89", "description": "Act done in good faith for benefit of child or insane person, by or by consent of guardian."},
+    {"section": "Section 90", "description": "Consent known to be given under fear or misconception."},
+    {"section": "Section 91", "description": "Exclusion of acts which are offences independently of harm caused."},
+    {"section": "Section 92", "description": "Act done in good faith for benefit of a person without consent."},
+    {"section": "Section 93", "description": "Communication made in good faith."},
+    {"section": "Section 94", "description": "Act to which a person is compelled by threats."},
+    {"section": "Section 95", "description": "Act causing slight harm."},
+    {"section": "Section 96", "description": "Things done in private defence."},
+    {"section": "Section 97", "description": "Right of private defence of the body and of property."},
+    {"section": "Section 98", "description": "Right of private defence against the act of a person of unsound mind, etc."},
+    {"section": "Section 99", "description": "Act against which there is no right of private defence."},
+    {"section": "Section 100", "description": "When the right of private defence of the body extends to causing death."},
+    {"section": "Section 101", "description": "When such right extends to causing any harm other than death."},
+    {"section": "Section 102", "description": "Commencement and continuance of the right of private defence of the body."},
+    {"section": "Section 103", "description": "When the right of private defence of property extends to causing death."},
+    {"section": "Section 104", "description": "When such right extends to causing any harm other than death."},
+    {"section": "Section 105", "description": "Commencement and continuance of the right of private defence of property."},
+    {"section": "Section 106", "description": "Right of private defence against deadly assault when there is risk of harm to innocent person."},
+    {"section": "Section 107", "description": "Abetment of a thing."},
+    {"section": "Section 108", "description": "Abettor."},
+    {"section": "Section 108A", "description": "Abetment in India of offences outside India."},
+    {"section": "Section 109", "description": "Punishment of abetment if the act abetted is committed in consequence, and where no express provision is made for its punishment."},
+    {"section": "Section 110", "description": "Punishment of abetment if person abetted does act with different intention from that of abettor."},
+    {"section": "Section 111", "description": "Liability of abettor when one act abetted and different act done."},
+    {"section": "Section 112", "description": "Abettor when liable to cumulative punishment for act}
+]
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/search', methods=['GET'])
+def search():
+    keyword = request.args.get('keyword', '').lower()
+    filtered_laws = [law for law in laws if keyword in law['section'].lower() or keyword in law['description'].lower()]
+    return jsonify(filtered_laws)
+
+if __name__ == '__main__':
+    app.run(debug=True)
